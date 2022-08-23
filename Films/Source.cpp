@@ -3,6 +3,7 @@
 #include<thread>
 #include<vector>
 #include<conio.h>
+#include<fstream>
 
 using namespace std;
 
@@ -124,10 +125,25 @@ public:
 		} while (vvod != 27);
 	}
 
-	/*void Prov()
+	void Prov(char vvod)
 	{
-
-	}*/
+		while (vvod!=27)
+		{
+			if (!film.empty())
+			{
+				ofstream r1("Zap.txt");
+				for (int i = 0; i < film.size(); i++)
+				{
+					r1 << "--->>>" << i + 1 << "<<<---\n";
+					r1 << "Autor: " << film[i].autor << "\n";
+					r1 << "Gangre: " << film[i].ganre << "\n";
+					r1 << "Name film: " << film[i].name << "\n";
+					r1 << "Opisanie: " << film[i].op << "\n";
+					r1 << "Year: " << film[i].year << "\n\n";
+				}
+			}
+		}
+	}
 
 };
 
@@ -135,6 +151,8 @@ int main()
 {
 
 	Film F;
+
+	thread Pot(&Film::Prov, &F);
 
 	char vvod;
 	do
@@ -146,6 +164,7 @@ int main()
 		cout << "4 - Print\n";
 		cout << "Exit - Esc\n";
 		vvod = _getch();
+		F.Prov(vvod);
 		switch (vvod)
 		{
 		case'1':
@@ -179,5 +198,5 @@ int main()
 		}
 		
 	} while (vvod != 27);
-
+	Pot.join();
 }
