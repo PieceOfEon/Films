@@ -3,14 +3,16 @@
 #include<thread>
 #include<vector>
 #include<conio.h>
+#include <iomanip>
 #include<fstream>
-
+#include <string>
 using namespace std;
 
 class Film
 {
 private:
-
+	string s;
+	string pl;
 	struct fm
 	{
 		string ganre;
@@ -23,7 +25,6 @@ private:
 	vector<fm>film;
 
 public:
-
 
 	void create()
 	{
@@ -125,36 +126,70 @@ public:
 		} while (vvod != 27);
 	}
 
-	void Prov(char vvod)
+	void Read()
+	{
+		string q;
+		ifstream r2("Zap.txt");
+		if (r2.is_open())
+		{
+			while (!r2.eof())
+			{
+				getline(r2, q);
+				s += q;
+			}
+			r2.close();
+		}
+
+	}
+
+	void Prov(char &vvod)
 	{
 		while (vvod!=27)
 		{
 			if (!film.empty())
 			{
-				ofstream r1("Zap.txt");
+				Read();
+				string a;
 				for (int i = 0; i < film.size(); i++)
 				{
-					r1 << "--->>>" << i + 1 << "<<<---\n";
-					r1 << "Autor: " << film[i].autor << "\n";
-					r1 << "Gangre: " << film[i].ganre << "\n";
-					r1 << "Name film: " << film[i].name << "\n";
-					r1 << "Opisanie: " << film[i].op << "\n";
-					r1 << "Year: " << film[i].year << "\n\n";
+					a = "Autor: " + film[i].autor  + "Gangre: " + film[i].ganre  + "Name film: " + film[i].name  + "Opisanie: " + film[i].op  + "Year: " + film[i].year;
+					pl += a;
 				}
+				if (s != pl)
+				{
+					cout << "s = " << s << "\n\n";
+					cout << pl << "\n\n";
+					ofstream r1("Zap.txt");
+					for (int i = 0; i < film.size(); i++)
+					{
+						/*r1 << "--->>>" << i + 1 << "<<<---\n";*/
+						r1 << "Autor: " << film[i].autor << "\n";
+						r1 << "Gangre: " << film[i].ganre << "\n";
+						r1 << "Name film: " << film[i].name << "\n";
+						r1 << "Opisanie: " << film[i].op << "\n";
+						r1 << "Year: " << film[i].year << "\n\n";
+					}
+					cout << "ZAPISANA!\n";
+					r1.close();
+				}
+				else
+				{
+					cout << "No zap.\n";
+				}
+				pl.clear();
+				s.clear();
 			}
+			this_thread::sleep_for(chrono::seconds(15));
 		}
 	}
-
 };
 
 int main()
 {
-
 	Film F;
 
-	thread Pot(&Film::Prov, &F);
-
 	char vvod;
+	thread Pot(&Film::Prov, &F, ref(vvod));
 	do
 	{
 		system("cls");
@@ -164,7 +199,6 @@ int main()
 		cout << "4 - Print\n";
 		cout << "Exit - Esc\n";
 		vvod = _getch();
-		F.Prov(vvod);
 		switch (vvod)
 		{
 		case'1':
